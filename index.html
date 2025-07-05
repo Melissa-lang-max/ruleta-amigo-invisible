@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ruleta del Amigo Invisible</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      background: #f0f4f8;
+      color: #333;
+      padding: 20px;
+    }
+    h1 {
+      color: #0f4c75;
+    }
+    .ruleta-container {
+      margin: 20px auto;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      border: 8px solid #3282b8;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      animation: girar 8s infinite linear;
+    }
+    @keyframes girar {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .segmento {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      background-color: transparent;
+      transform-origin: 100% 100%;
+      clip-path: polygon(100% 100%, 0% 100%, 100% 0%);
+    }
+    .controles {
+      margin-top: 20px;
+    }
+    select, button {
+      font-size: 1em;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #3282b8;
+      color: white;
+      cursor: pointer;
+    }
+    #resultado {
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #1b262c;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎉 Ruleta del Amigo Invisible 🎉</h1>
+  <div class="ruleta-container" id="ruleta"></div>
+
+  <div class="controles">
+    <select id="nombre">
+      <option value="">-- Selecciona tu nombre --</option>
+      <option value="Jazmin">Jazmin</option>
+      <option value="Rosalia">Rosalia</option>
+      <option value="Thiara">Thiara</option>
+      <option value="Melissa">Melissa</option>
+      <option value="Sofia">Sofia</option>
+      <option value="Jorge">Jorge</option>
+      <option value="Marcos">Marcos</option>
+      <option value="Eva">Eva</option>
+      <option value="Felicia">Felicia</option>
+      <option value="Pamela">Pamela</option>
+      <option value="Eunice">Eunice</option>
+      <option value="Ancelma">Ancelma</option>
+      <option value="Adriana">Adriana</option>
+    </select>
+    <br />
+    <button onclick="asignarAmigo()">Descubrir 🎁</button>
+    <div id="resultado"></div>
+  </div>
+
+  <script>
+    const nombres = [
+      "Jazmin", "Rosalia", "Thiara", "Melissa", "Sofia",
+      "Jorge", "Marcos", "Eva", "Felicia", "Pamela",
+      "Eunice", "Ancelma", "Adriana"
+    ];
+    const colores = [
+      "#e6194B", "#3cb44b", "#ffe119", "#4363d8", "#f58231",
+      "#911eb4", "#46f0f0", "#f032e6", "#bcf60c", "#fabebe",
+      "#008080", "#e6beff", "#9A6324"
+    ];
+    const asignaciones = {};
+    let disponibles = [...nombres];
+
+    // Dibujar segmentos de ruleta
+    const ruleta = document.getElementById("ruleta");
+    nombres.forEach((nombre, i) => {
+      const seg = document.createElement("div");
+      seg.className = "segmento";
+      seg.style.backgroundColor = colores[i % colores.length];
+      seg.style.transform = `rotate(${(360 / nombres.length) * i}deg)`;
+      ruleta.appendChild(seg);
+    });
+
+    function asignarAmigo() {
+      const nombre = document.getElementById("nombre").value;
+      const resultado = document.getElementById("resultado");
+
+      if (!nombre) {
+        alert("Por favor selecciona tu nombre.");
+        return;
+      }
+
+      if (asignaciones[nombre]) {
+        resultado.innerHTML = `Ya te fue asignado tu amigo secreto: <strong>${asignaciones[nombre]}</strong>`;
+        return;
+      }
+
+      const posibles = disponibles.filter(n => n !== nombre);
+      if (posibles.length === 0) {
+        resultado.innerHTML = "No hay más amigos disponibles.";
+        return;
+      }
+
+      const index = Math.floor(Math.random() * posibles.length);
+      const amigo = posibles[index];
+
+      asignaciones[nombre] = amigo;
+      disponibles = disponibles.filter(n => n !== amigo);
+
+      resultado.innerHTML = `🎁 Tu amigo invisible es: <strong>${amigo}</strong>`;
+
+      console.log("Asignaciones hasta ahora:", asignaciones);
+    }
+  </script>
+</body>
+</html>
